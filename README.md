@@ -10,7 +10,7 @@ Navega a la ruta donde deseas instalar el programa. Alli se creará un volumen p
 1. Clonación del repositorio.
 
    ```bash
-   git clone https://github.com/santiago-rincon/personal_finances_manager
+   git clone https://github.com/santiago-rincon/personal_finances_manager --depth=1
    ```
 
 2. Ejecución de los contenedores. Aseurate ene l caso de Windows que el demonio de Docker este en ejecución (abrir Docker Desktop).
@@ -28,7 +28,7 @@ Tras ser ejecutado por primera vez, se podrá gestionar los contenedores a trav�
 
 ![Imagen de Docker Desktop](./assets/docker_desktop.png)
 
-O través del comando de docker ejecutado desde la carpeta donde se encuentra el proyecto:
+O través del comando de docker ejecutado desde la carpeta donde se encuentra el proyecto.
 
 ```bash
    docker compose up -d
