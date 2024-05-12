@@ -1,0 +1,119 @@
+<section class="grid grid-cols-5 max-w-5xl mx-auto px-2 md:px-0 py-5 md:py-0">
+  <article
+    class="flex items-center col-span-5 md:col-span-3 h-auto md:h-[87vh] relative">
+    @if (loading) {
+      <div class="h-auto md:h-[87vh] flex items-center flex-1">
+        <p-progressSpinner
+          class="mx-auto"
+          strokeWidth="8"
+          fill="var(--surface-ground)"
+          animationDuration=".5s" />
+      </div>
+    } @else {
+      <app-chart
+        style="flex: 1"
+        type="pie"
+        [data]="data"
+        [options]="options"
+        (reload)="ngOnInit()" />
+    }
+  </article>
+  <article
+    class="flex flex-col col-span-5 md:col-span-2 gap-y-5 px-10 h-auto md:h-[87vh] justify-center items-center">
+    <div class="flex flex-col justify-between gap-y-3 w-full">
+      <strong class="self-start">Categorias</strong>
+      <p-button
+        (click)="visibleAdd = true"
+        label="Añadir categoria"
+        styleClass="w-full" />
+      <p-button
+        (click)="openEditCategories()"
+        label="Editar categoria"
+        styleClass="w-full" />
+    </div>
+    <div class="flex flex-col justify-between gap-y-3 w-full">
+      <strong class="self-start">Datos</strong>
+      <a routerLink="/add" class="p-button inline"> Añadir datos </a>
+      <a routerLink="/all" class="p-button inline"> Ver todos </a>
+    </div>
+  </article>
+</section>
+
+<!-- Toast -->
+<p-toast
+  position="bottom-right"
+  [breakpoints]="{ '920px': { width: '90%', right: '5' } }" />
+
+<!-- Dialogs -->
+<p-dialog
+  header="Añade una nueva categoria"
+  [modal]="true"
+  [(visible)]="visibleAdd"
+  [style]="{ width: '25rem' }">
+  <div class="flex items-center justify-center gap-3 mb-4">
+    <label for="category" class="font-semibold w-6rem">Categoria:</label>
+    <input
+      pInputText
+      id="category"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="newCategory" />
+  </div>
+  <div class="flex justify-end gap-2">
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      type="submit"
+      (click)="visibleAdd = false" />
+    <p-button
+      label="Añadir"
+      (click)="addCategory()"
+      [disabled]="newCategory.length === 0" />
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Edita una categoria"
+  [modal]="true"
+  [(visible)]="visibleEdit"
+  [style]="{ width: '25rem', height: '30rem' }">
+  @if (loadingEdit) {
+    <div class="grid place-content-center h-full">
+      <p-progressSpinner
+        class="mx-auto"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s" />
+    </div>
+  } @else {
+    <span class="p-text-secondary block mb-5"
+      >Haz clic sobre la categoría que quieres editar</span
+    >
+    <ul class="flex flex-col gap-y-5">
+      @for (category of categories; track category.id) {
+        <p-inputGroup>
+          <input
+            type="text"
+            pInputText
+            placeholder="Nueva categoria"
+            [(ngModel)]="category.category"
+            (focus)="changedisabled(category.id)" />
+          <button
+            type="button"
+            pButton
+            [disabled]="category.disabled"
+            class="p-button-primary"
+            (click)="editCategory(category.id)">
+            <span class="pi pi-pen-to-square"></span>
+          </button>
+        </p-inputGroup>
+      } @empty {
+        <div
+          class="flex flex-col gap-y-5 items-center justify-center h-80 mt-auto">
+          <span>No se han podido cargar los datos</span>
+          <p-button (click)="openEditCategories()" label="Reintentar" />
+        </div>
+      }
+    </ul>
+  }
+</p-dialog>

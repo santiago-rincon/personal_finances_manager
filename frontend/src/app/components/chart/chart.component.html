@@ -1,0 +1,27 @@
+@if (showReload) {
+  <p-button
+    (onClick)="reloadMethod()"
+    icon="pi pi-refresh"
+    styleClass="z-10 absolute top-7 left-4 bg-white hover:scale-110 transition-transform"
+    [text]="true"
+    [rounded]="true"
+    [raised]="true"
+    [severity]="'secondary'" />
+}
+@if (data.datasets[0].data.length === 0) {
+  <div
+    class="h-[78vh] flex justify-center items-center flex-col gap-y-16 border border-[#e5e7eb] rounded-lg">
+    <h3 class="text-balance text-4xl text-center">
+      Aún no hay datos registrados...
+    </h3>
+    <app-loader />
+  </div>
+} @else {
+  <p-chart
+    class="[&>*]:border [&>*]:border-[#e5e7eb] [&>*]:rounded-lg [&>*]:bg-white [&>*]:shadow-sm"
+    [type]="type"
+    [data]="data"
+    [options]="options"
+    [plugins]="plugin"
+    height="81vh" />
+}

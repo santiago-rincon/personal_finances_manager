@@ -1,0 +1,31 @@
+<header
+  id="navbar"
+  class="h-[13vh] flex flex-row justify-between items-center px-6 bg-[var(--primary-color)]">
+  <h1
+    class="text-xl md:text-2xl uppercase text-white font-bold hover:cursor-pointer"
+    (click)="home()">
+    <span class="pi pi-dollar text-2xl me-1"></span>Manejo de ingresos y gastos
+  </h1>
+  <p-button
+    type="button"
+    size="large"
+    (click)="sideBarVisible = true"
+    icon="pi pi-palette" />
+</header>
+<p-sidebar [(visible)]="sideBarVisible" position="right">
+  <h3 class="text-xl font-semibold ms-2 mb-6">Cambia tu tema</h3>
+  <ul class="flex flex-col gap-y-3">
+    @for (theme of themes; track $index) {
+      <li>
+        <span
+          class="size-4 rounded-full inline-block me-3"
+          style="background-color: {{ theme.color }}"></span
+        ><button
+          (click)="changeTheme(theme.style)"
+          class="hover:font-semibold transition-transform">
+          {{ theme.name }}
+        </button>
+      </li>
+    }
+  </ul>
+</p-sidebar>

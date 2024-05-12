@@ -1,0 +1,67 @@
+<section
+  class="grid grid-cols-2 gap-6 min-h-[87vh] px-5 md:px-0 place-content-center py-4 max-w-3xl mx-auto">
+  @if (loading) {
+    <p-progressSpinner
+      class="mx-auto col-span-2"
+      strokeWidth="8"
+      fill="var(--surface-ground)"
+      animationDuration=".5s" />
+  } @else {
+    <h2 class="text-center text-balance text-2xl font-bold col-span-2">
+      Añadir un nuevo datos
+    </h2>
+    <div class="flex flex-col gap-y-2 col-span-2">
+      <label for="value" class="font-bold">Valor:</label>
+      <p-inputNumber
+        inputId="value"
+        autocomplete="off"
+        [(ngModel)]="newCost.value"
+        styleClass="w-full"
+        mode="currency"
+        currency="COP"
+        minFractionDigits="0"
+        placeholder="$ 125.000" />
+    </div>
+    <div class="flex flex-col gap-y-2 col-span-2 md:col-span-1">
+      <label for="value" class="font-bold">Categoria:</label>
+      <p-dropdown
+        styleClass="w-full"
+        [options]="categories"
+        [(ngModel)]="newCost.category"
+        optionLabel="category"
+        optionValue="id"
+        emptyMessage="No hay categorias para mostrar"
+        placeholder="Selecciona una categoria" />
+    </div>
+    <div class="flex flex-col gap-y-2 col-span-2 md:col-span-1">
+      <label for="value" class="font-bold">Fecha:</label>
+      <p-calendar
+        [(ngModel)]="newCost.date"
+        styleClass="w-full"
+        dateFormat="dd/mm/yy" />
+    </div>
+    <div class="flex flex-col gap-y-2 col-span-2">
+      <label for="value" class="font-bold">Descripción:</label>
+      <textarea
+        variant="filled"
+        rows="3"
+        cols="30"
+        pInputTextarea
+        [(ngModel)]="newCost.description"></textarea>
+    </div>
+    <div class="flex justify-end gap-2 col-span-2">
+      <a routerLink="/" class="p-button">Volver</a>
+      <p-button
+        label="Añadir"
+        (click)="addCost()"
+        [loading]="loadingButton"
+        [disabled]="
+          newCost.category === null ||
+          newCost.value === null ||
+          newCost.date === null ||
+          newCost.description.length === 0
+        " />
+    </div>
+  }
+</section>
+<p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }" />

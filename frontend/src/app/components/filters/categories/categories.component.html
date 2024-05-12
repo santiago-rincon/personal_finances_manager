@@ -1,0 +1,69 @@
+<div class="grid grid-cols-2 gap-4">
+  <div class="col-span-2 flex flex-col gap-y-2">
+    <label for="value" class="font-bold">Selecciona los meses:</label>
+    <p-calendar
+      styleClass="w-full md:w-1/2"
+      selectionMode="multiple"
+      [(ngModel)]="filterForm.dates"
+      view="month"
+      dateFormat="MM-yy" />
+  </div>
+  <div class="col-span-2 flex flex-col gap-y-4">
+    @if (filterForm.categories.length > 0) {
+      <div class="flex flex-col-reverse gap-y-4">
+        <label for="value" class="font-bold">Selecciona las categorias:</label>
+        <div class="flex items-center gap-x-2">
+          <label for="switch" class="font-bold">
+            Seleccionar todas las categorias
+          </label>
+          <p-inputSwitch
+            styleClass="flex"
+            (onChange)="selectAllCategories($event)"
+            inputId="switch" />
+        </div>
+      </div>
+    }
+    <ul class="flex flex-row flex-wrap gap-x-6 gap-y-4 justify-start">
+      @for (item of filterForm.categories; track item.id) {
+        <li>
+          <p-checkbox
+            [(ngModel)]="filterForm.selectedCategory"
+            name="categories"
+            [label]="item.category"
+            [value]="item.id" />
+        </li>
+      } @empty {
+        <li class="self-start">
+          Cargando categorias
+          <span class="text-gray-500 pi pi-spin pi-spinner ms-2"></span>
+        </li>
+      }
+    </ul>
+  </div>
+  <div class="col-span-2 mt-2 mx-auto flex flex-col gap-y-2">
+    <p-button
+      label="Consultar"
+      [disabled]="
+        filterForm.dates.length === 0 ||
+        filterForm.selectedCategory.length === 0
+      "
+      (onClick)="getDataTwo()"
+      styleClass="" />
+  </div>
+</div>
+<div class="relative mt-6">
+  <app-chart
+    type="bar"
+    [data]="dataTwo"
+    [options]="optionsTwo"
+    [showReload]="false" />
+  @if (dataTwo.datasets[0].data.length > 0) {
+    <div class="flex items-center gap-x-2 mt-2">
+      <label for="switch" class="font-bold"> Mostrar etiquetas </label>
+      <p-inputSwitch
+        styleClass="flex"
+        (onChange)="showLabels($event)"
+        inputId="switch" />
+    </div>
+  }
+</div>

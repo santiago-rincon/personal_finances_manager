@@ -1,0 +1,105 @@
+<div class="grid grid-cols-2 gap-5">
+  <div class="flex flex-col gap-y-2 col-span-2 md:col-span-1">
+    <label for="value" class="font-bold"
+      >Selecciona una opción de busqueda:</label
+    >
+    <p-dropdown
+      styleClass="w-full"
+      [options]="options"
+      optionLabel="label"
+      optionValue="id"
+      (onChange)="changeSelect($event)"
+      emptyMessage="Ha ocurrido un error"
+      placeholder="Selecciona una opción" />
+  </div>
+  @switch (currentView) {
+    @case (1) {
+      <div class="col-span-2 md:col-span-1 flex flex-col gap-y-2">
+        <label for="value" class="font-bold">Selecciona un mes:</label>
+        <p-calendar
+          (onSelect)="getAllDatabyDate($event)"
+          styleClass="w-full"
+          view="month"
+          dateFormat="MM,yy" />
+      </div>
+    }
+    @case (2) {
+      <div class="flex flex-col gap-y-2 col-span-2 md:col-span-1">
+        <label for="value" class="font-bold">Selecciona una categoria:</label>
+        <p-dropdown
+          styleClass="w-full"
+          [options]="categories"
+          optionLabel="category"
+          optionValue="id"
+          (onChange)="getAllDataByCategory($event)"
+          emptyMessage="No hay categorias para mostrar"
+          placeholder="Selecciona una categoria" />
+      </div>
+    }
+    @case (3) {
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-2 md:col-span-1">
+        <div class="flex flex-col gap-y-2">
+          <label for="value" class="font-bold">Selecciona una categoria:</label>
+          <p-dropdown
+            styleClass="w-full"
+            [options]="categories"
+            optionLabel="category"
+            optionValue="id"
+            [(ngModel)]="categoryAndMonth.id"
+            (onChange)="getAllDataByCategoryAndMonth()"
+            emptyMessage="No hay categorias para mostrar"
+            placeholder="Selecciona una categoria" />
+        </div>
+        <div class="flex flex-col gap-y-2">
+          <label for="value" class="font-bold">Selecciona un mes:</label>
+          <p-calendar
+            styleClass="hover:cursor-pointer"
+            (onSelect)="getAllDataByCategoryAndMonth()"
+            styleClass="w-full"
+            view="month"
+            [(ngModel)]="categoryAndMonth.date"
+            dateFormat="MM,yy" />
+        </div>
+      </div>
+    }
+  }
+  @if (data.length > 0) {
+    <div class="col-span-2">
+      <p-table [value]="data" [tableStyle]="{ 'min-width': '60rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="description" style="width: 20%">
+              Descripción <p-sortIcon field="description" />
+            </th>
+            <th pSortableColumn="value" style="width: 20%">
+              Valor <p-sortIcon field="value" />
+            </th>
+            <th pSortableColumn="category" style="width: 20%">
+              Categoria <p-sortIcon field="category" />
+            </th>
+            <th pSortableColumn="date" style="width: 20%">
+              Fecha <p-sortIcon field="date" />
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-finance>
+          <tr>
+            <td>{{ finance.description }}</td>
+            <td>{{ finance.value | currency: '$' : 'symbol' : '3.0' }}</td>
+            <td>{{ finance.category }}</td>
+            <td>{{ finance.date }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  } @else {
+    <div
+      class="col-span-2 h-[78vh] flex justify-center items-center flex-col gap-y-16 border border-[#e5e7eb] rounded-lg">
+      <h3 class="text-balance text-4xl text-center">
+        Aún no hay datos registrados...
+      </h3>
+      <app-loader />
+    </div>
+  }
+</div>

@@ -1,0 +1,49 @@
+@layer tailwind-base, primeng, tailwind-utilities;
+@import 'node_modules/primeng/resources/primeng.min.css';
+@import 'primeicons/primeicons.css';
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+::view-transition-new(root) {
+  animation: enter 750ms ease-out 0s 1 normal forwards;
+}
+
+::view-transition-old(root) {
+  animation: exit 750ms ease-out 0s 1 normal forwards;
+}
+
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+

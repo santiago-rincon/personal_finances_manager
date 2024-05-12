@@ -1,0 +1,44 @@
+<section
+  class="flex flex-col justify-center gap-y-10 min-h-[87vh] max-w-5xl mx-auto px-4 md:px-0 py-5 relative">
+  <h2 class="text-center text-balance text-2xl font-bold col-span-2">
+    Filtra tus datos
+  </h2>
+  <a
+    routerLink="/"
+    class="bg-white absolute top-4 left-3 p-ripple p-element p-button p-component p-button-icon-only p-button-raised p-button-rounded p-button-outlined"
+    ><span class="pi pi-arrow-left"></span
+  ></a>
+  <p-tabView
+    styleClass="border border-[#e5e7eb] shadow-xl bg-white rounded-lg p-2">
+    <p-tabPanel header="Filtrar por mes">
+      <app-months (toast)="triggerToast($event)" />
+    </p-tabPanel>
+    <p-tabPanel header="Filtrar por categoria">
+      @defer (on viewport) {
+        <app-categories (toast)="triggerToast($event)" />
+      } @placeholder {
+        <div class="min-h-60 grid place-content-center">
+          <p-progressSpinner
+            class="mx-auto"
+            strokeWidth="8"
+            fill="var(--surface-ground)"
+            animationDuration=".5s" />
+        </div>
+      }
+    </p-tabPanel>
+    <p-tabPanel header="Ver todos (Tabla)">
+      @defer (on viewport) {
+        <app-table-mode (toast)="triggerToast($event)" />
+      } @placeholder {
+        <div class="min-h-60 grid place-content-center">
+          <p-progressSpinner
+            class="mx-auto"
+            strokeWidth="8"
+            fill="var(--surface-ground)"
+            animationDuration=".5s" />
+        </div>
+      }
+    </p-tabPanel>
+  </p-tabView>
+</section>
+<p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }" />
