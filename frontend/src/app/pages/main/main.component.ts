@@ -65,6 +65,7 @@ export class MainComponent implements OnInit {
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
+        this.loading = false;
         const detail =
           error.status === 0
             ? 'Ha ocurrido un error de conexión, no se obtuvieron los datos.'

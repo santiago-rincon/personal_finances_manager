@@ -10,7 +10,7 @@
 }
 @if (data.datasets[0].data.length === 0) {
   <div
-    class="h-[78vh] flex justify-center items-center flex-col gap-y-16 border border-[#e5e7eb] rounded-lg">
+    class="h-[78vh] flex justify-center items-center flex-col gap-y-16 border border-[#e5e7eb] rounded-lg bg-white">
     <h3 class="text-balance text-4xl text-center">
       Aún no hay datos registrados...
     </h3>
@@ -18,7 +18,7 @@
   </div>
 } @else {
   <p-chart
-    class="[&>*]:border [&>*]:border-[#e5e7eb] [&>*]:rounded-lg [&>*]:bg-white [&>*]:shadow-sm"
+    class="[&>*]:border [&>*]:border-[#e5e7eb] [&>*]:rounded-lg [&>*]:bg-white [&>*]:shadow-sm bg-white"
     [type]="type"
     [data]="data"
     [options]="options"
