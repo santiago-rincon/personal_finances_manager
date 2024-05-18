@@ -1,29 +1,31 @@
-import { CurrencyPipe } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
+import { CalendarModule } from 'primeng/calendar';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
-import { LoaderComponent } from '@components/loader/loader.component';
+import { getMonthStr } from '@utils';
+import { HttpErrorResponse } from '@angular/common/http';
 import { HttpService } from '@services/http.service';
+import { LoaderComponent } from '@components/loader/loader.component';
+import { TableModule } from 'primeng/table';
 import {
   CategoryResponse,
   FinanceTableFormat,
   TiggerToastOptins,
 } from '@types';
-import { getMonthStr } from '@utils';
-import { CalendarModule } from 'primeng/calendar';
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
-import { TableModule } from 'primeng/table';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-table-mode',
   standalone: true,
   imports: [
-    DropdownModule,
-    TableModule,
-    CurrencyPipe,
     CalendarModule,
-    LoaderComponent,
+    CurrencyPipe,
+    DropdownModule,
     FormsModule,
+    LoaderComponent,
+    RouterLink,
+    TableModule,
   ],
   providers: [HttpService],
   templateUrl: './table-mode.component.html',
@@ -66,6 +68,7 @@ export class TableModeComponent {
             return {
               ...finance,
               category: finance.category.category,
+              b64: btoa(JSON.stringify({ ...finance })),
             };
           });
         },
@@ -122,6 +125,7 @@ export class TableModeComponent {
           return {
             ...finance,
             category: finance.category.category,
+            b64: btoa(JSON.stringify({ ...finance })),
           };
         });
       },
@@ -156,6 +160,7 @@ export class TableModeComponent {
           return {
             ...finance,
             category: finance.category.category,
+            b64: btoa(JSON.stringify({ ...finance })),
           };
         });
       },
@@ -193,6 +198,7 @@ export class TableModeComponent {
             return {
               ...finance,
               category: finance.category.category,
+              b64: btoa(JSON.stringify({ ...finance })),
             };
           });
         },

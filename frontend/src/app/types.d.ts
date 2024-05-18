@@ -12,10 +12,12 @@ export interface FinanceRequest {
 }
 
 export interface FinanceTableFormat {
+  id: number;
   value: number;
   description: string;
   date: string;
   category: string;
+  b64: string;
 }
 
 export interface FinancesResponse {

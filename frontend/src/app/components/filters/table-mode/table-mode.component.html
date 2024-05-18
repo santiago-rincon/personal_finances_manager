@@ -69,18 +69,19 @@
       <p-table [value]="data" [tableStyle]="{ 'min-width': '60rem' }">
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="description" style="width: 20%">
+            <th pSortableColumn="description" style="width: 24%">
               Descripción <p-sortIcon field="description" />
             </th>
-            <th pSortableColumn="value" style="width: 20%">
+            <th pSortableColumn="value" style="width: 24%">
               Valor <p-sortIcon field="value" />
             </th>
-            <th pSortableColumn="category" style="width: 20%">
+            <th pSortableColumn="category" style="width: 24%">
               Categoria <p-sortIcon field="category" />
             </th>
-            <th pSortableColumn="date" style="width: 20%">
+            <th pSortableColumn="date" style="width: 24%">
               Fecha <p-sortIcon field="date" />
             </th>
+            <th pSortableColumn="edit" style="width: 4%">Editar</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-finance>
@@ -89,6 +90,14 @@
             <td>{{ finance.value | currency: '$' : 'symbol' : '3.0' }}</td>
             <td>{{ finance.category }}</td>
             <td>{{ finance.date }}</td>
+            <td>
+              <a
+                routerLink="/add"
+                [queryParams]="{ data: finance.b64 }"
+                class="bg-white p-ripple p-element p-button p-component p-button-icon-only p-button-raised p-button-rounded p-button-outlined"
+                ><span class="pi pi-pen-to-square"></span
+              ></a>
+            </td>
           </tr>
         </ng-template>
       </p-table>

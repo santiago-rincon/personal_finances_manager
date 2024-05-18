@@ -73,4 +73,12 @@ export class HttpService {
       `${environment.mainUrl}/finances/${id}`
     );
   }
+
+  editFinance(id: number, finance: FinanceRequest) {
+    return this.http.patch(`${environment.mainUrl}/finances/${id}`, finance);
+  }
+
+  deleteFinance(id: number) {
+    return this.http.delete(`${environment.mainUrl}/finances/${id}`);
+  }
 }
