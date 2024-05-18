@@ -13,8 +13,17 @@ export class CategoriesService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const category = this.categoryRepository.create(createCategoryDto);
-    return this.categoryRepository.save(category);
+    const exist = await this.categoryRepository.find({
+      where: {
+        category: createCategoryDto.category,
+      },
+    });
+    if (exist.length === 0) {
+      const category = this.categoryRepository.create(createCategoryDto);
+      return this.categoryRepository.save(category);
+    } else {
+      throw new HttpException('Category already exists', HttpStatus.CONFLICT);
+    }
   }
 
   findAll() {

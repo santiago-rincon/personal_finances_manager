@@ -68,6 +68,7 @@
     <p-button
       label="Añadir"
       (click)="addCategory()"
+      [loading]="loadingButton"
       [disabled]="newCategory.length === 0" />
   </div>
 </p-dialog>

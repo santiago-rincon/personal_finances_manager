@@ -41,6 +41,7 @@ export class MainComponent implements OnInit {
   data: ChartData = { datasets: [{ data: [] }] };
   loading = true;
   loadingEdit = false;
+  loadingButton = false;
   newCategory = '';
   now = new Date();
   options: ChartOptions = {};
@@ -89,26 +90,33 @@ export class MainComponent implements OnInit {
       });
       return;
     }
+    this.loadingButton = true;
     this.http.addNewCategory(this.newCategory).subscribe({
       next: () => {
-        this.visibleAdd = false;
         this.newCategory = '';
         this.toastSrv.add({
           severity: 'success',
           summary: 'Categoria añadida',
           detail: 'Se ha añadido la categoria correctamente',
         });
+        this.visibleAdd = false;
+        this.loadingButton = false;
       },
       error: (error: HttpErrorResponse) => {
-        const detail =
-          error.status === 0
-            ? 'de conexión, intentalo de nuevo.'
-            : 'con el servidor, intentalo de nuevo.';
+        let detail = '';
+        if (error.status === 0) {
+          detail = 'de conexión, intentalo de nuevo.';
+        } else if (error.status === 409) {
+          detail = 'con el servidor, la categoria ya existe.';
+        } else {
+          detail = 'con el servidor, intentalo de nuevo.';
+        }
         this.toastSrv.add({
           severity: 'error',
           summary: 'Error',
           detail: `Ha ocurrido un error ${detail}`,
         });
+        this.loadingButton = false;
         console.error('Error:', error.error);
       },
     });
