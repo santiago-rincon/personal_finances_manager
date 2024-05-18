@@ -59,7 +59,16 @@ export class AddComponent implements OnInit {
   ngOnInit(): void {
     this.http.getCategories().subscribe({
       next: categories => {
-        this.categories = categories;
+        const sortCategories = categories.sort(function (a, b) {
+          if (a.category > b.category) {
+            return 1;
+          }
+          if (a.category < b.category) {
+            return -1;
+          }
+          return 0;
+        });
+        this.categories = sortCategories;
         this.activateRoute.queryParams.subscribe({
           next: params => {
             const { data } = params;

@@ -90,7 +90,15 @@ export class TableModeComponent {
     if ((value === 2 || value === 3) && this.categories.length === 0) {
       this.http.getCategories().subscribe({
         next: categories => {
-          this.categories = categories;
+          this.categories = categories.sort(function (a, b) {
+            if (a.category > b.category) {
+              return 1;
+            }
+            if (a.category < b.category) {
+              return -1;
+            }
+            return 0;
+          });
         },
         error: (error: HttpErrorResponse) => {
           const detail =

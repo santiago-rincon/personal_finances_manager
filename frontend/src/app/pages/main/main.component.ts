@@ -180,8 +180,17 @@ export class MainComponent implements OnInit {
     this.visibleEdit = true;
     this.http.getCategories().subscribe({
       next: categories => {
-        this.categoriesOriginal = [...categories];
-        const newArray: CategoryEdit[] = categories.map(category => ({
+        const sortCategories = categories.sort(function (a, b) {
+          if (a.category > b.category) {
+            return 1;
+          }
+          if (a.category < b.category) {
+            return -1;
+          }
+          return 0;
+        });
+        this.categoriesOriginal = sortCategories;
+        const newArray: CategoryEdit[] = sortCategories.map(category => ({
           ...category,
           disabled: true,
         }));

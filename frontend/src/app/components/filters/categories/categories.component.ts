@@ -42,7 +42,15 @@ export class CategoriesComponent implements OnInit {
   ngOnInit(): void {
     this.http.getCategories().subscribe({
       next: categories => {
-        this.filterForm.categories = categories;
+        this.filterForm.categories = categories.sort(function (a, b) {
+          if (a.category > b.category) {
+            return 1;
+          }
+          if (a.category < b.category) {
+            return -1;
+          }
+          return 0;
+        });
       },
       error: (error: HttpErrorResponse) => {
         const detail =
