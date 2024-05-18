@@ -31,7 +31,13 @@ Tras ser ejecutado por primera vez, se podrá gestionar los contenedores a trav�
 O través del comando de docker ejecutado desde la carpeta donde se encuentra el proyecto.
 
 ```bash
-   docker compose up -d
+   docker compose -f docker-compose.yml up -d
+```
+> [!NOTE]  
+> Si el proyecto se actualiza es necesario reconstruir los contenedores. Ejecuta el comando de docker desde la carpeta donde se encuentra el proyecto.
+
+```bash
+   docker compose -f docker-compose.yml up -d --build
 ```
 
 # Agregar un dominio (opcional)
@@ -40,7 +46,8 @@ Si deseas agregar un dominio como `finances.local` debes editar el archivo `host
 
 - Linux: /etc/host
 - Windows: C:\Windows\system32\drivers\etc\host
-  Agrega la siguiente linea:
+
+Agrega la siguiente linea:
 
 ```
 127.0.0.1   tudominio.local
