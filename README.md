@@ -33,10 +33,12 @@ O través del comando de docker ejecutado desde la carpeta donde se encuentra el
 ```bash
    docker compose -f docker-compose.yml up -d
 ```
-> [!NOTE]  
-> Si el proyecto se actualiza es necesario reconstruir los contenedores. Ejecuta el comando de docker desde la carpeta donde se encuentra el proyecto.
+# Actualización del proyecto
+
+Si el proyecto se actualiza es necesario reconstruir los contenedores. Ejecuta los siguientes comandos **desde la carpeta donde se encuentra el proyecto**.
 
 ```bash
+   git pull origin main
    docker compose -f docker-compose.yml up -d --build
 ```
 
