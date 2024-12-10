@@ -3,6 +3,7 @@ import { FinancesModule } from './finances/finances.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
+import { Categories } from './categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -11,16 +12,10 @@ import { CategoriesModule } from './categories/categories.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST,
-      port: parseInt(process.env.MYSQL_PORT),
-      username: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
+      type: 'sqlite',
       database: process.env.MYSQL_DATABASE,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
-      retryDelay: 5000,
-      retryAttempts: 9999,
+      entities: [__dirname + '/**/*.entity{.ts,.js}', Categories],
+      synchronize: true,
     }),
     FinancesModule,
     CategoriesModule,

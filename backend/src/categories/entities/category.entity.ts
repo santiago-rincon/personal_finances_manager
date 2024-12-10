@@ -5,6 +5,6 @@ export class Categories {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'text', nullable: false })
   category: string;
 }

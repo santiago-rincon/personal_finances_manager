@@ -1,24 +1,15 @@
 services:
-  database:
-    container_name: finance_db
-    image: mysql:8.4.0
-    env_file:
-      - ./backend/.env.production
-    volumes:
-      - ./database/dump:/var/lib/mysql:rw
-      - ./database/finances.sql:/docker-entrypoint-initdb.d/finances.sql:ro
   backend:
     container_name: finance_backend
     image: finance_backend_img
     build: ./backend
-    depends_on:
-      - database
+    volumes:
+      - ./database:/app/src/database/:rw
   frontend:
     container_name: finance_frontend
     image: finance_frontend_img
     build: ./frontend
     depends_on:
       - backend
-      - database
     ports:
       - 80:80
