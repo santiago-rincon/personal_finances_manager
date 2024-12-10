@@ -1,1 +1,3 @@
-database/*
+database/finances.db
+database/*-shm
+database/*-wal
