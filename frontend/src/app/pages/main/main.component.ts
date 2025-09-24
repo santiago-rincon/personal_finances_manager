@@ -5,7 +5,6 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { Component, OnInit, inject } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
 import { HttpService } from '@services/http.service';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
@@ -51,37 +50,43 @@ export class MainComponent implements OnInit {
   visibleEdit = false;
   visibleAddCost = false;
 
-  ngOnInit() {
-    const result = this.http.getFinancesByMonth({
-      month: this.now.getMonth() + 1,
-      year: this.now.getFullYear(),
+  async ngOnInit() {
+    const month = this.now.getMonth() + 1;
+    const year = this.now.getFullYear();
+    const { data: dataSupabase, error } = await this.http.getFinancesByMonth({
+      month,
+      year,
     });
-    result.subscribe({
-      next: finances => {
-        const [data, options] = setPieChart(finances, this.now);
-        if (data !== null && options !== null) {
-          this.data = data;
-          this.options = options;
-        }
-        this.loading = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.loading = false;
-        const detail =
-          error.status === 0
-            ? 'Ha ocurrido un error de conexión, no se obtuvieron los datos.'
-            : 'Ha ocurrido un error con el servidor, no se obtuvieron los datos.';
-        this.triggerToast({
-          title: 'Error',
-          message: detail,
-          severity: 'error',
-        });
-        console.error('Error:', error);
-      },
-    });
+    if (error) {
+      this.loading = false;
+      this.triggerToast({
+        title: 'Error',
+        message:
+          'Ha ocurrido un error de conexión, no se obtuvieron los datos.',
+        severity: 'error',
+      });
+      console.error('Error:', error);
+      return;
+    }
+    if (dataSupabase === null || dataSupabase.length === 0) {
+      this.loading = false;
+      this.triggerToast({
+        title: 'Sin informción',
+        message:
+          'No hay datos para mostrar en este mes, añade un gasto para ver el gráfico.',
+        severity: 'info',
+      });
+      return;
+    }
+    const [data, options] = setPieChart(dataSupabase, this.now);
+    if (data !== null && options !== null) {
+      this.data = data;
+      this.options = options;
+    }
+    this.loading = false;
   }
 
-  addCategory() {
+  async addCategory() {
     if (this.newCategory === '') {
       this.toastSrv.add({
         severity: 'info',
@@ -91,38 +96,32 @@ export class MainComponent implements OnInit {
       return;
     }
     this.loadingButton = true;
-    this.http.addNewCategory(this.newCategory).subscribe({
-      next: () => {
-        this.newCategory = '';
-        this.toastSrv.add({
-          severity: 'success',
-          summary: 'Categoria añadida',
-          detail: 'Se ha añadido la categoria correctamente',
-        });
-        this.visibleAdd = false;
-        this.loadingButton = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        let detail = '';
-        if (error.status === 0) {
-          detail = 'de conexión, intentalo de nuevo.';
-        } else if (error.status === 409) {
-          detail = 'con el servidor, la categoria ya existe.';
-        } else {
-          detail = 'con el servidor, intentalo de nuevo.';
-        }
-        this.toastSrv.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Ha ocurrido un error ${detail}`,
-        });
-        this.loadingButton = false;
-        console.error('Error:', error.error);
-      },
+    const error = await this.http.addNewCategory(this.newCategory);
+    if (error.error !== null) {
+      const message =
+        error.error?.code === '23505'
+          ? 'de duplicado. Intentalo con otro nombre.'
+          : 'inesperado. Intentalo de nuevo.';
+      this.toastSrv.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Ha ocurrido un error ${message}`,
+      });
+      this.loadingButton = false;
+      console.error('Error:', error.error);
+      return;
+    }
+    this.newCategory = '';
+    this.toastSrv.add({
+      severity: 'success',
+      summary: 'Categoria añadida',
+      detail: 'Se ha añadido la categoria correctamente',
     });
+    this.visibleAdd = false;
+    this.loadingButton = false;
   }
 
-  editCategory(id: number) {
+  async editCategory(id: number) {
     const newCategory = this.categories.find(category => category.id === id);
     if (newCategory === undefined) return;
     if (newCategory.category === '') {
@@ -148,75 +147,81 @@ export class MainComponent implements OnInit {
       return;
     }
     this.categories[indexOldCategory].disabled = true;
-    this.http.updateCategory(id, newCategory.category).subscribe({
-      next: () => {
-        this.categoriesOriginal[indexOldCategory].category =
-          newCategory.category;
-        this.toastSrv.add({
-          severity: 'success',
-          summary: 'Categoria editada',
-          detail: 'Se ha editado la categoria correctamente',
-        });
-        this.categories[indexOldCategory].disabled = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        const detail =
-          error.status === 0
-            ? 'de conexión, no se actualizo la categoria. Intentalo de nuevo.'
-            : 'con el servidor, no se actualizo la categoria. Intentalo de nuevo.';
-        this.toastSrv.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Ha ocurrido un error ${detail}`,
-        });
-        this.loadingEdit = false;
-        console.error('Error:', error.error);
-      },
+    const { error } = await this.http.updateCategory(id, newCategory.category);
+    if (error !== null) {
+      this.toastSrv.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Ha ocurrido un error inesperado. Intentalo de nuevo.`,
+      });
+      this.loadingEdit = false;
+      console.error('Error:', error);
+      return;
+    }
+    this.categoriesOriginal[indexOldCategory].category = newCategory.category;
+    this.toastSrv.add({
+      severity: 'success',
+      summary: 'Categoria editada',
+      detail: 'Se ha editado la categoria correctamente',
     });
+    this.categories[indexOldCategory].disabled = false;
   }
 
-  openEditCategories() {
+  async openEditCategories() {
     this.loadingEdit = true;
     this.visibleEdit = true;
-    this.http.getCategories().subscribe({
-      next: categories => {
-        const sortCategories = categories.sort(function (a, b) {
-          if (a.category > b.category) {
-            return 1;
-          }
-          if (a.category < b.category) {
-            return -1;
-          }
-          return 0;
-        });
-        this.categoriesOriginal = sortCategories;
-        const newArray: CategoryEdit[] = sortCategories.map(category => ({
-          ...category,
-          disabled: true,
-        }));
-        this.categories = newArray;
-        this.loadingEdit = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        const detail =
-          error.status === 0
-            ? 'de conexión, intentalo de nuevo'
-            : 'con el servidor, intentalo de nuevo';
-        this.toastSrv.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Ha ocurrido un error ${detail}`,
-        });
-        this.loadingEdit = false;
-        console.error('Error:', error.error);
-      },
+    const { data, error } = await this.http.getCategories();
+    if (error) {
+      this.toastSrv.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Ha ocurrido un error al obtener las categorias, intentalo de nuevo.`,
+      });
+      this.loadingEdit = false;
+      console.error('Error:', error);
+      return;
+    }
+    if (data === null) {
+      this.toastSrv.add({
+        severity: 'info',
+        summary: 'Sin categorias',
+        detail: `No hay categorias para mostrar, añade una nueva.`,
+      });
+      this.loadingEdit = false;
+      return;
+    }
+    const sortCategories = data.sort(function (a, b) {
+      if (a.category > b.category) {
+        return 1;
+      }
+      if (a.category < b.category) {
+        return -1;
+      }
+      return 0;
     });
+    this.categoriesOriginal = sortCategories;
+    const newArray: CategoryEdit[] = sortCategories.map(category => ({
+      ...category,
+      disabled: true,
+    }));
+    this.categories = newArray;
+    this.loadingEdit = false;
   }
 
   changedisabled(id: number) {
     this.categories.forEach(category => {
       category.disabled = !(category.id === id);
     });
+  }
+
+  private changeOptionsResize(width: number) {
+    let position;
+    if (width <= 768) {
+      position = 'bottom';
+    } else {
+      position = 'right';
+    }
+    return position;
   }
 
   private triggerToast({

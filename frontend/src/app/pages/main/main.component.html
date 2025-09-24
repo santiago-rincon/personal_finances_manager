@@ -1,4 +1,5 @@
-<section class="grid grid-cols-5 max-w-5xl mx-auto px-2 md:px-0 py-5 md:py-0">
+<section
+  class="grid grid-cols-5 max-w-5xl mx-auto px-2 md:px-0 py-5 md:py-0 gap-3">
   <article
     class="flex items-center col-span-5 md:col-span-3 h-auto md:h-[87vh] relative">
     @if (loading) {
@@ -9,13 +10,17 @@
           fill="var(--surface-ground)"
           animationDuration=".5s" />
       </div>
-    } @else {
+    } @else if (data !== null) {
       <app-chart
-        style="flex: 1"
+        style="width: 100%"
         type="pie"
         [data]="data"
         [options]="options"
         [showReload]="false" />
+    } @else {
+      <div class="h-auto md:h-[87vh] flex items-center justify-center flex-1">
+        <app-loader />
+      </div>
     }
   </article>
   <article

@@ -39,7 +39,7 @@ export function setPieChart(
     plugins: {
       legend: {
         align: 'center',
-        position: 'right',
+        position: 'bottom',
         labels: {
           usePointStyle: true,
           color: textColor,
